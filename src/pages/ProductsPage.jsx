@@ -20,7 +20,16 @@ export default function ProductsPage() {
   };
 
   useEffect(() => {
-    fetchProducts();
+    api
+      .get("/products")
+      .then((res) => {
+        setProducts(res.data);
+      })
+      .catch((err) => {
+        console.error("載入商品失敗，顯示空列表", err);
+        // 500 時先給空陣列，讓畫面顯示「暫無商品」
+        setProducts([]);
+      });
   }, []);
 
   const handleDelete = async (id) => {
@@ -31,41 +40,64 @@ export default function ProductsPage() {
   };
 
   return (
-    <div className="container my-5" style={{ maxWidth: 700 }}>
-      <h2 className="mb-4">商品列表</h2>
-      <table className="table table-striped">
-        <thead>
-          <tr>
-            <th>ID</th>
-            <th>名稱</th>
-            <th>價格</th>
-            <th>操作</th>
-          </tr>
-        </thead>
-        <tbody>
-          {products.map((p) => (
-            <tr key={p.id}>
-              <td>{p.id}</td>
-              <td>{p.name}</td>
-              <td>${p.price}</td>
-              <td>
-                <Link
-                  className="btn btn-sm btn-outline-secondary me-2"
-                  to={`/products/${p.id}/edit`}
-                >
-                  編輯
-                </Link>
-                <button
-                  className="btn btn-sm btn-outline-danger"
-                  onClick={() => handleDelete(p.id)}
-                >
-                  刪除
-                </button>
-              </td>
-            </tr>
-          ))}
-        </tbody>
-      </table>
+    <div className="container-fluid">
+      {/* 1. Page Heading */}
+      <div className="d-sm-flex align-items-center justify-content-between mb-4">
+        <h1 className="h3 mb-0 text-gray-800">商品列表</h1>
+        <Link to="/products/new" className="btn btn-primary">
+          新增商品
+        </Link>
+      </div>
+
+      {/* 2. 商品表格 Card */}
+      <div className="card shadow mb-4">
+        <div className="card-body p-0">
+          <div className="table-responsive">
+            <table className="table table-hover align-middle mb-0">
+              <thead className="table-light">
+                <tr>
+                  <th style={{ width: "10%" }}>ID</th>
+                  <th>名稱</th>
+                  <th style={{ width: "15%" }}>價格</th>
+                  <th style={{ width: "25%" }}>操作</th>
+                </tr>
+              </thead>
+              <tbody>
+                {products.map((p) => (
+                  <tr key={p.id}>
+                    <td>{p.id}</td>
+                    <td>{p.name}</td>
+                    <td>${p.price}</td>
+                    <td>
+                      <div className="d-flex gap-2">
+                        <Link
+                          to={`/products/${p.id}/edit`}
+                          className="btn btn-sm btn-outline-secondary"
+                        >
+                          編輯
+                        </Link>
+                        <button
+                          onClick={() => handleDelete(p.id)}
+                          className="btn btn-sm btn-outline-danger"
+                        >
+                          刪除
+                        </button>
+                      </div>
+                    </td>
+                  </tr>
+                ))}
+                {products.length === 0 && (
+                  <tr>
+                    <td colSpan="4" className="text-center py-3">
+                      暫無商品
+                    </td>
+                  </tr>
+                )}
+              </tbody>
+            </table>
+          </div>
+        </div>
+      </div>
     </div>
   );
 }
