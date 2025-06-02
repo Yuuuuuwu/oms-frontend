@@ -34,3 +34,20 @@
 .sidebar-divider:first-of-type {
   display: none;
 }
+/* 在 index.css 或自訂的 CSS 檔裡 */
+.dropdown-list {
+  border-radius: 0.35rem;
+  overflow: hidden;
+}
+.dropdown-list .dropdown-header {
+  background-color: #f8f9fc;
+  font-weight: bold;
+}
+.dropdown-list .dropdown-item:hover {
+  background-color: #f2f2f2;
+}
+
+/* 滑鼠滑到通知項目或個人檔案、登出時，背景變淺灰 */
+.hover-bg-light:hover {
+  background-color: #f2f2f2;
+}

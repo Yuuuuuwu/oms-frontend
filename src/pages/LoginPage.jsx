@@ -1,13 +1,8 @@
-/*
-  src/pages/LoginPage.jsx
-  ----
-  會員登入頁面：輸入 username/password
-*/
 import { useState, useEffect } from "react";
 import { Link, useNavigate } from "react-router-dom";
 import api from "../api";
 
-export default function LoginPage() {
+export default function LoginPage({ setToken }) {
   const [username, setUsername] = useState("");
   const [password, setPassword] = useState("");
   const navigate = useNavigate();
@@ -21,6 +16,8 @@ export default function LoginPage() {
     try {
       const res = await api.post("/auth/login", { username, password });
       localStorage.setItem("token", res.data.access_token);
+      localStorage.setItem("username", username); // 可在 Navbar 顯示
+      setToken(res.data.access_token); // ✅ 通知 AppRouter
       navigate("/products");
     } catch (err) {
       console.error(err);

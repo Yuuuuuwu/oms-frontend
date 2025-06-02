@@ -4,7 +4,7 @@ import Sidebar from "./Sidebar";
 import Navbar from "./Navbar";
 import { Outlet } from "react-router-dom";
 
-export default function AppLayout() {
+export default function AppLayout({ setToken }) {
   return (
     <div id="wrapper">
       {/* 側邊欄永遠顯示 */}
@@ -12,8 +12,8 @@ export default function AppLayout() {
 
       <div id="content-wrapper" className="d-flex flex-column">
         <div id="content">
-          {/* 上方導覽列 */}
-          <Navbar />
+          {/* 傳入 setToken 給 Navbar */}
+          <Navbar setToken={setToken} />
 
           {/* 主要內容：左右置中，頂底留白 */}
           <main className="container-xl">
