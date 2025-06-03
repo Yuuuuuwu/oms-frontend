@@ -6,7 +6,7 @@
     "skipLibCheck": true,
     "esModuleInterop": true,
     "allowSyntheticDefaultImports": true,
-    "strict": true, // 開啟嚴格模式
+    "strict": true,
     "forceConsistentCasingInFileNames": true,
     "noFallthroughCasesInSwitch": true,
     "module": "ESNext",
@@ -15,9 +15,14 @@
     "isolatedModules": true,
     "noEmit": true,
     "jsx": "react-jsx",
-    "baseUrl": "src", // 相對 import 從 src/ 開始
+    "allowJs": false,
+    "baseUrl": "src",
+    /* 確保 .tsx 檔案可以被辨識 */
+    "resolveJsonModule": true,
+    "esModuleInterop": true,
+    "skipLibCheck": true,
     "paths": {
-      "@/*": ["*"] // 可用 "@/components/..." 撰寫絕對路徑
+      "@/*": ["*"]
     }
   },
   "include": ["src"],
