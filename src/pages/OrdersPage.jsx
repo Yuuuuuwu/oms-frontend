@@ -1,4 +1,5 @@
 // src/pages/OrdersPage.jsx
+
 import { useEffect, useState } from "react";
 import { useNavigate, Link } from "react-router-dom";
 import api from "../api";
@@ -10,14 +11,13 @@ export default function OrdersPage() {
   const [products, setProducts] = useState([]);
   const [expanded, setExpanded] = useState({});
 
-  // 1️⃣ 初始化：確認登入並載入訂單與商品
+  // 初始化：確認登入並載入訂單與商品
   useEffect(() => {
     async function init() {
       const uid = await fetchCurrentUser();
       if (!uid) return navigate("/login", { replace: true });
 
       try {
-        // 並行拿訂單與商品
         const [oRes, pRes] = await Promise.all([
           api.get("/orders"),
           api.get("/products"),
@@ -32,18 +32,17 @@ export default function OrdersPage() {
     init();
   }, [navigate]);
 
-  // 2️⃣ 切換展開明細
+  // 切換展開明細
   const toggleExpand = (orderId) => {
     setExpanded((prev) => ({ ...prev, [orderId]: !prev[orderId] }));
   };
 
-  // 3️⃣ 刪除訂單
+  // 刪除訂單
   const handleDelete = async (orderId) => {
     if (!window.confirm(`確定要刪除訂單 #${orderId}？`)) return;
     try {
       await api.delete(`/orders/${orderId}`);
       alert(`訂單 #${orderId} 已刪除`);
-      // 重新載入
       setOrders((prev) => prev.filter((o) => o.id !== orderId));
     } catch (err) {
       console.error("刪除失敗：", err);
@@ -52,24 +51,43 @@ export default function OrdersPage() {
   };
 
   return (
-    <div className="container my-5" style={{ maxWidth: 900 }}>
+    <div style={{ maxWidth: "900px", margin: "0 auto", padding: "24px 16px" }}>
       {/* 標題與建立訂單按鈕 */}
-      <div className="d-flex justify-content-between align-items-center mb-4">
-        <h2>訂單管理</h2>
+      <div
+        style={{
+          display: "flex",
+          justifyContent: "space-between",
+          alignItems: "center",
+          marginBottom: "24px",
+        }}
+      >
+        <h2 style={{ fontSize: "1.5rem", color: "var(--color-text-main)" }}>
+          訂單管理
+        </h2>
         <Link to="/orders/new" className="btn btn-primary">
           建立訂單
         </Link>
       </div>
 
-      {/* 如果沒有訂單，顯示提示 */}
       {orders.length === 0 ? (
-        <div className="alert alert-info">目前沒有訂單。</div>
+        <div
+          className="alert alert-info"
+          style={{ fontSize: "1rem", textAlign: "center" }}
+        >
+          目前沒有訂單。
+        </div>
       ) : (
         <ul className="list-group">
           {orders.map((o) => (
-            <li key={o.id} className="list-group-item">
+            <li key={o.id} className="list-group-item mb-3">
               {/* 訂單主要資訊 */}
-              <div className="d-flex justify-content-between align-items-center">
+              <div
+                style={{
+                  display: "flex",
+                  justifyContent: "space-between",
+                  alignItems: "center",
+                }}
+              >
                 <div>
                   <strong>訂單 #{o.id}</strong> — 狀態：{o.status}
                 </div>
@@ -91,39 +109,62 @@ export default function OrdersPage() {
 
               {/* 展開後的商品明細 */}
               {expanded[o.id] && (
-                <div className="mt-3 p-3 bg-light rounded">
-                  <h5 className="mb-3">商品明細</h5>
+                <div
+                  style={{
+                    marginTop: "16px",
+                    padding: "16px",
+                    backgroundColor: "#F8F9FA",
+                    borderRadius: "6px",
+                  }}
+                >
+                  <h5
+                    style={{
+                      marginBottom: "12px",
+                      color: "var(--color-text-main)",
+                    }}
+                  >
+                    商品明細
+                  </h5>
 
-                  <table className="table table-bordered table-sm">
-                    <thead className="table-light">
-                      <tr>
-                        <th>商品名稱</th>
-                        <th>數量</th>
-                        <th>單價</th>
-                        <th>小計</th>
-                      </tr>
-                    </thead>
-                    <tbody>
-                      {o.items.map((it, idx) => {
-                        const prod = products.find(
-                          (p) => p.id === it.product_id
-                        );
-                        const name = prod ? prod.name : "未知";
-                        const subtotal = it.quantity * it.price;
-                        return (
-                          <tr key={idx}>
-                            <td>{name}</td>
-                            <td>{it.quantity}</td>
-                            <td>${it.price}</td>
-                            <td>${subtotal}</td>
-                          </tr>
-                        );
-                      })}
-                    </tbody>
-                  </table>
+                  <div className="table-responsive">
+                    <table className="table table-bordered table-sm mb-3">
+                      <thead className="table-light">
+                        <tr>
+                          <th>商品名稱</th>
+                          <th>數量</th>
+                          <th>單價</th>
+                          <th>小計</th>
+                        </tr>
+                      </thead>
+                      <tbody>
+                        {o.items.map((it, idx) => {
+                          const prod = products.find(
+                            (p) => p.id === it.product_id
+                          );
+                          const name = prod ? prod.name : "未知";
+                          const subtotal = it.quantity * it.price;
+                          return (
+                            <tr key={idx}>
+                              <td>{name}</td>
+                              <td>{it.quantity}</td>
+                              <td>${it.price}</td>
+                              <td>${subtotal}</td>
+                            </tr>
+                          );
+                        })}
+                      </tbody>
+                    </table>
+                  </div>
 
                   {/* 總計 */}
-                  <div className="d-flex justify-content-end fw-bold">
+                  <div
+                    style={{
+                      display: "flex",
+                      justifyContent: "flex-end",
+                      fontWeight: "600",
+                      fontSize: "1rem",
+                    }}
+                  >
                     {(() => {
                       const totalQty = o.items.reduce(
                         (sum, it) => sum + it.quantity,
@@ -135,7 +176,9 @@ export default function OrdersPage() {
                       );
                       return (
                         <>
-                          <div className="me-4">總數量：{totalQty}</div>
+                          <div style={{ marginRight: "24px" }}>
+                            總數量：{totalQty}
+                          </div>
                           <div>總金額：${totalAmt}</div>
                         </>
                       );

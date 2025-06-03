@@ -1,8 +1,5 @@
-/*
-  src/pages/RegisterPage.jsx
-  ----
-  會員註冊頁面：輸入 username/email/password
-*/
+// src/pages/RegisterPage.jsx
+
 import { useState, useEffect } from "react";
 import { useNavigate, Link } from "react-router-dom";
 import api from "../api";
@@ -32,11 +29,24 @@ export default function RegisterPage() {
   };
 
   return (
-    <div className="container my-5" style={{ maxWidth: 500 }}>
-      <h2 className="mb-4">會員註冊</h2>
+    <div style={{ maxWidth: "500px", margin: "0 auto", padding: "24px 16px" }}>
+      <h2
+        style={{
+          fontSize: "1.5rem",
+          marginBottom: "24px",
+          color: "var(--color-text-main)",
+        }}
+      >
+        會員註冊
+      </h2>
       <form onSubmit={handleSubmit}>
         <div className="mb-3">
-          <label className="form-label">使用者名稱：</label>
+          <label
+            className="form-label"
+            style={{ fontSize: "1rem", color: "var(--color-text-main)" }}
+          >
+            使用者名稱：
+          </label>
           <input
             className="form-control"
             type="text"
@@ -46,7 +56,12 @@ export default function RegisterPage() {
           />
         </div>
         <div className="mb-3">
-          <label className="form-label">Email：</label>
+          <label
+            className="form-label"
+            style={{ fontSize: "1rem", color: "var(--color-text-main)" }}
+          >
+            Email：
+          </label>
           <input
             className="form-control"
             type="email"
@@ -56,7 +71,12 @@ export default function RegisterPage() {
           />
         </div>
         <div className="mb-3">
-          <label className="form-label">密碼：</label>
+          <label
+            className="form-label"
+            style={{ fontSize: "1rem", color: "var(--color-text-main)" }}
+          >
+            密碼：
+          </label>
           <input
             className="form-control"
             type="password"
@@ -68,7 +88,10 @@ export default function RegisterPage() {
         <button type="submit" className="btn btn-primary w-100">
           註冊
         </button>
-        <p className="mt-3 text-center">
+        <p
+          className="mt-3 text-center"
+          style={{ color: "var(--color-text-secondary)" }}
+        >
           已有帳號？<Link to="/login"> 點此登入</Link>
         </p>
       </form>

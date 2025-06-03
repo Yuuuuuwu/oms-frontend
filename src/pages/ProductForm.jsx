@@ -1,8 +1,5 @@
-/*
-  src/pages/ProductForm.jsx
-  ----
-  商品表單：新增與編輯共用，包含名稱與價格欄位
-*/
+// src/pages/ProductForm.jsx
+
 import { useState, useEffect } from "react";
 import api from "../api";
 import { useNavigate, useParams } from "react-router-dom";
@@ -37,11 +34,24 @@ export default function ProductForm() {
   };
 
   return (
-    <div className="container my-5" style={{ maxWidth: 500 }}>
-      <h2 className="mb-4">{id ? "編輯商品" : "新增商品"}</h2>
+    <div style={{ maxWidth: "600px", margin: "0 auto", padding: "24px 16px" }}>
+      <h2
+        style={{
+          fontSize: "1.5rem",
+          marginBottom: "24px",
+          color: "var(--color-text-main)",
+        }}
+      >
+        {id ? "編輯商品" : "新增商品"}
+      </h2>
       <form onSubmit={handleSubmit}>
         <div className="mb-3">
-          <label className="form-label">名稱：</label>
+          <label
+            className="form-label"
+            style={{ fontSize: "1rem", color: "var(--color-text-main)" }}
+          >
+            名稱：
+          </label>
           <input
             className="form-control"
             value={name}
@@ -50,7 +60,12 @@ export default function ProductForm() {
           />
         </div>
         <div className="mb-3">
-          <label className="form-label">價格：</label>
+          <label
+            className="form-label"
+            style={{ fontSize: "1rem", color: "var(--color-text-main)" }}
+          >
+            價格：
+          </label>
           <input
             type="number"
             className="form-control"

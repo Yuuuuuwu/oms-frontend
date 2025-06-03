@@ -8,9 +8,9 @@ export default function Navbar({ setToken }) {
 
   // 1. 儲存使用者名稱
   const [username, setUsername] = useState("");
-  // 2. 控制「使用者下拉」是否打開
+  // 2. 是否打開「使用者下拉」
   const [dropdownOpen, setDropdownOpen] = useState(false);
-  // 3. 控制「通知下拉」是否打開
+  // 3. 是否打開「通知下拉」
   const [notifOpen, setNotifOpen] = useState(false);
 
   // 4. 參考「使用者下拉」DOM
@@ -18,20 +18,18 @@ export default function Navbar({ setToken }) {
   // 5. 參考「通知下拉」DOM
   const notifRef = useRef(null);
 
-  // 讀 localStorage 裡的 username，若沒有就顯示「使用者」
+  // 讀 localStorage 裡的 username，若沒就顯示「使用者」
   useEffect(() => {
     const savedUsername = localStorage.getItem("username") || "使用者";
     setUsername(savedUsername);
   }, []);
 
-  // 點擊畫面外側就關閉下拉
+  // 點擊畫面空白處，若點擊在下拉外面就關閉下拉
   useEffect(() => {
     const handleClickOutside = (e) => {
-      // 使用者下拉
       if (dropdownRef.current && !dropdownRef.current.contains(e.target)) {
         setDropdownOpen(false);
       }
-      // 通知下拉
       if (notifRef.current && !notifRef.current.contains(e.target)) {
         setNotifOpen(false);
       }
@@ -42,7 +40,7 @@ export default function Navbar({ setToken }) {
     };
   }, []);
 
-  // 按下登出
+  // 點擊「登出」：清除 localStorage，跳回登入頁
   const handleLogout = () => {
     localStorage.removeItem("token");
     localStorage.removeItem("username");
@@ -51,152 +49,260 @@ export default function Navbar({ setToken }) {
   };
 
   return (
-    <nav className="navbar navbar-expand navbar-light bg-white topbar shadow">
-      <div className="container-fluid px-4">
-        {/* —— 品牌：點擊回 /dashboard —— */}
-        <Link className="navbar-brand" to="/dashboard">
-          <span className="font-weight-bold text-primary">訂單管理系統</span>
+    <nav
+      className="navbar"
+      style={{
+        backgroundColor: "#FFFFFF", // 白底
+        borderBottom: "1px solid var(--color-border)", // 底線分隔
+        height: "64px",
+        display: "flex",
+        alignItems: "center",
+        padding: "0 24px",
+        /* 若要讓 navbar 固定在最上方，可加：
+           position: sticky; top: 0; z-index: 100; */
+      }}
+    >
+      {/* 左側：系統名稱 (點擊回到 /dashboard) */}
+      <div>
+        <Link
+          to="/dashboard"
+          style={{
+            fontSize: "1.25rem", // 約 20px
+            fontWeight: "600",
+            color: "var(--color-primary)", // 主色
+            textDecoration: "none",
+          }}
+        >
+          訂單管理系統
         </Link>
+      </div>
 
-        {/* —— 右側：通知鈴鐺 + 使用者下拉 —— */}
-        <ul className="navbar-nav ml-auto">
-          {/* —— (A) 通知鈴鐺 —— */}
-          <li
-            className="nav-item dropdown no-arrow mx-2 position-relative"
-            ref={notifRef}
+      {/* 右側：通知鈴鐺 + 使用者下拉 */}
+      <div
+        style={{ marginLeft: "auto", display: "flex", alignItems: "center" }}
+      >
+        {/* 通知鈴鐺 */}
+        <div
+          ref={notifRef}
+          style={{ position: "relative", marginRight: "24px" }}
+        >
+          <button
+            onClick={() => setNotifOpen(!notifOpen)}
+            style={{
+              background: "none",
+              border: "none",
+              cursor: "pointer",
+              fontSize: "1.2rem",
+              color: "var(--color-text-secondary)", // 字串裡帶 CSS var
+              position: "relative",
+            }}
           >
-            <button
-              className="nav-link btn border-0 bg-transparent p-0"
-              onClick={() => setNotifOpen(!notifOpen)}
+            <i className="fas fa-bell"></i>
+            {/* 紅點 */}
+            <span
+              style={{
+                position: "absolute",
+                top: "-4px",
+                right: "-4px",
+                backgroundColor: "#E74C3C",
+                color: "#FFF",
+                borderRadius: "50%",
+                fontSize: "0.6rem",
+                width: "16px",
+                height: "16px",
+                display: "flex",
+                alignItems: "center",
+                justifyContent: "center",
+              }}
             >
-              <i className="fas fa-bell fa-lg text-gray-600"></i>
-              {/* 紅點：一定要 position absolute，並且父層有 position-relative */}
-              <span
-                className="badge badge-danger badge-counter"
-                style={{
-                  position: "absolute",
-                  top: "-5px",
-                  right: "-5px",
-                  fontSize: "0.6rem",
-                  padding: "2px 4px",
-                  lineHeight: "1",
-                }}
-              >
-                3
-              </span>
-            </button>
+              3
+            </span>
+          </button>
 
-            {notifOpen && (
+          {notifOpen && (
+            <div
+              style={{
+                position: "absolute",
+                top: "100%",
+                right: "0",
+                width: "300px",
+                backgroundColor: "#FFF",
+                boxShadow: "0 4px 8px rgba(0,0,0,0.1)",
+                borderRadius: "8px",
+                marginTop: "0.5rem",
+                zIndex: 1000,
+                maxHeight: "400px",
+                overflowY: "auto",
+              }}
+            >
+              {/* 通知標題 */}
               <div
-                className="position-absolute bg-white shadow rounded"
                 style={{
-                  top: "100%",
-                  right: "0",
-                  width: "300px", // 比之前更寬
-                  zIndex: 1000,
-                  marginTop: "0.5rem",
-                  maxHeight: "400px",
-                  overflowY: "auto",
+                  padding: "8px 12px",
+                  borderBottom: "1px solid var(--color-border)",
+                  backgroundColor: "#f8f9fc",
                 }}
               >
-                {/* 通知標題 */}
-                <div
-                  className="px-3 py-2 border-bottom"
-                  style={{ backgroundColor: "#f8f9fc" }}
+                <span
+                  style={{
+                    fontSize: "0.9rem",
+                    fontWeight: "600",
+                    color: "#555",
+                  }}
                 >
-                  <span className="small font-weight-bold text-gray-700">
-                    通知列表
+                  通知列表
+                </span>
+              </div>
+
+              {/* 範例通知 1 */}
+              <Link
+                to="#!"
+                className="d-flex align-items-start px-3 py-2 hover-bg-light"
+                style={{
+                  textDecoration: "none",
+                  borderBottom: "1px solid var(--color-border)",
+                }}
+              >
+                <i
+                  className="fas fa-circle fa-xs text-primary mr-2 mt-1"
+                  style={{ fontSize: "0.6rem" }}
+                ></i>
+                <div>
+                  <div style={{ fontSize: "0.8rem", color: "#999" }}>
+                    2025-06-02
+                  </div>
+                  <span style={{ fontSize: "0.9rem", color: "#333" }}>
+                    範例通知：訂單 #12345 已出貨
                   </span>
                 </div>
-                {/* 範例通知 1 */}
-                <Link
-                  to="#!"
-                  className="d-flex align-items-start px-3 py-2 text-decoration-none border-bottom hover-bg-light"
-                  style={{ backgroundColor: "white" }}
-                >
-                  <i className="fas fa-circle fa-xs text-primary mr-2 mt-1"></i>
-                  <div>
-                    <div className="small text-gray-500">2025-06-02</div>
-                    <span className="text-sm text-gray-800">
-                      範例通知：訂單 #12345 已出貨
-                    </span>
-                  </div>
-                </Link>
-                {/* 範例通知 2 */}
-                <Link
-                  to="#!"
-                  className="d-flex align-items-start px-3 py-2 text-decoration-none border-bottom hover-bg-light"
-                  style={{ backgroundColor: "white" }}
-                >
-                  <i className="fas fa-circle fa-xs text-warning mr-2 mt-1"></i>
-                  <div>
-                    <div className="small text-gray-500">2025-06-01</div>
-                    <span className="text-sm text-gray-800">
-                      範例通知：商品 XYZ 庫存不足
-                    </span>
-                  </div>
-                </Link>
-                {/* 更多通知... */}
+              </Link>
 
-                {/* 查看所有通知 */}
-                <Link
-                  to="#!"
-                  className="d-block text-center small text-gray-600 py-2 text-decoration-none hover-bg-light"
-                  style={{ backgroundColor: "white" }}
-                >
-                  查看所有通知
-                </Link>
-              </div>
-            )}
-          </li>
-
-          {/* —— (B) 使用者大頭貼 + 下拉 —— */}
-          <li
-            className="nav-item dropdown no-arrow ml-3 position-relative"
-            ref={dropdownRef}
-          >
-            <button
-              className="nav-link btn border-0 bg-transparent d-flex align-items-center p-0"
-              onClick={() => setDropdownOpen(!dropdownOpen)}
-            >
-              <span className="mr-2 d-none d-lg-inline text-gray-600 small">
-                {username}
-              </span>
-              <i className="fas fa-user-circle fa-2x text-gray-600"></i>
-            </button>
-            {dropdownOpen && (
-              <div
-                className="position-absolute bg-white shadow rounded"
+              {/* 範例通知 2 */}
+              <Link
+                to="#!"
+                className="d-flex align-items-start px-3 py-2 hover-bg-light"
                 style={{
-                  top: "100%",
-                  right: "0",
-                  width: "180px",
-                  zIndex: 1000,
-                  marginTop: "0.5rem",
+                  textDecoration: "none",
+                  borderBottom: "1px solid var(--color-border)",
                 }}
               >
-                {/* —— 個人檔案 連結，要填 /profile —— */}
-                <Link
-                  className="dropdown-item d-flex align-items-center py-2 px-3 hover-bg-light"
-                  to="/profile"
-                >
-                  <i className="fas fa-user fa-sm fa-fw mr-2 text-gray-400"></i>
-                  <span className="small text-gray-800">個人檔案</span>
-                </Link>
+                <i
+                  className="fas fa-circle fa-xs text-warning mr-2 mt-1"
+                  style={{ fontSize: "0.6rem" }}
+                ></i>
+                <div>
+                  <div style={{ fontSize: "0.8rem", color: "#999" }}>
+                    2025-06-01
+                  </div>
+                  <span style={{ fontSize: "0.9rem", color: "#333" }}>
+                    範例通知：商品 XYZ 庫存不足
+                  </span>
+                </div>
+              </Link>
 
-                <div className="dropdown-divider"></div>
-                <button
-                  className="dropdown-item d-flex align-items-center py-2 px-3 hover-bg-light w-100"
-                  onClick={handleLogout}
-                  style={{ backgroundColor: "white", border: "none" }}
-                >
-                  <i className="fas fa-sign-out-alt fa-sm fa-fw mr-2 text-gray-400"></i>
-                  <span className="small text-gray-800">登出</span>
-                </button>
-              </div>
-            )}
-          </li>
-        </ul>
+              {/* 「查看所有通知」連結 */}
+              <Link
+                to="#!"
+                className="d-block text-center py-2 hover-bg-light"
+                style={{
+                  fontSize: "0.85rem",
+                  color: "var(--color-text-secondary)",
+                  textDecoration: "none",
+                }}
+              >
+                查看所有通知
+              </Link>
+            </div>
+          )}
+        </div>
+
+        {/* 使用者頭像 + 下拉 */}
+        <div ref={dropdownRef} style={{ position: "relative" }}>
+          <button
+            onClick={() => setDropdownOpen(!dropdownOpen)}
+            style={{
+              background: "none",
+              border: "none",
+              cursor: "pointer",
+              display: "flex",
+              alignItems: "center",
+            }}
+          >
+            <span
+              style={{
+                fontSize: "0.95rem",
+                color: "var(--color-text-secondary)",
+                marginRight: "8px",
+              }}
+            >
+              {username}
+            </span>
+            <i
+              className="fas fa-user-circle"
+              style={{ fontSize: "1.5rem", color: "#888" }}
+            ></i>
+          </button>
+
+          {dropdownOpen && (
+            <div
+              style={{
+                position: "absolute",
+                top: "100%",
+                right: "0",
+                width: "180px",
+                backgroundColor: "#FFF",
+                boxShadow: "0 4px 8px rgba(0,0,0,0.1)",
+                borderRadius: "8px",
+                marginTop: "0.5rem",
+                zIndex: 1000,
+              }}
+            >
+              {/* 個人檔案 連結 */}
+              <Link
+                to="/profile"
+                className="d-flex align-items-center px-3 py-2 hover-bg-light"
+                style={{
+                  textDecoration: "none",
+                  color: "var(--color-text-main)",
+                  fontSize: "0.9rem",
+                }}
+              >
+                <i
+                  className="fas fa-user fa-sm fa-fw mr-2"
+                  style={{ color: "#888" }}
+                ></i>
+                個人檔案
+              </Link>
+
+              <div
+                style={{
+                  height: "1px",
+                  backgroundColor: "var(--color-border)",
+                  margin: "4px 0",
+                }}
+              ></div>
+
+              <button
+                onClick={handleLogout}
+                className="d-flex align-items-center w-100 px-3 py-2 hover-bg-light"
+                style={{
+                  background: "none",
+                  border: "none",
+                  cursor: "pointer",
+                  fontSize: "0.9rem",
+                  color: "var(--color-text-main)",
+                  textAlign: "left",
+                }}
+              >
+                <i
+                  className="fas fa-sign-out-alt fa-sm fa-fw mr-2"
+                  style={{ color: "#888" }}
+                ></i>
+                登出
+              </button>
+            </div>
+          )}
+        </div>
       </div>
     </nav>
   );

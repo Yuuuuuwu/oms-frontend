@@ -1,3 +1,5 @@
+// src/pages/LoginPage.jsx
+
 import { useState, useEffect } from "react";
 import { Link, useNavigate } from "react-router-dom";
 import api from "../api";
@@ -16,8 +18,8 @@ export default function LoginPage({ setToken }) {
     try {
       const res = await api.post("/auth/login", { username, password });
       localStorage.setItem("token", res.data.access_token);
-      localStorage.setItem("username", username); // 可在 Navbar 顯示
-      setToken(res.data.access_token); // ✅ 通知 AppRouter
+      localStorage.setItem("username", username);
+      setToken(res.data.access_token);
       navigate("/products");
     } catch (err) {
       console.error(err);
@@ -28,11 +30,24 @@ export default function LoginPage({ setToken }) {
   };
 
   return (
-    <div className="container my-5" style={{ maxWidth: 500 }}>
-      <h2 className="mb-4">會員登入</h2>
+    <div style={{ maxWidth: "500px", margin: "0 auto", padding: "24px 16px" }}>
+      <h2
+        style={{
+          fontSize: "1.5rem",
+          marginBottom: "24px",
+          color: "var(--color-text-main)",
+        }}
+      >
+        會員登入
+      </h2>
       <form onSubmit={handleSubmit}>
         <div className="mb-3">
-          <label className="form-label">使用者名稱：</label>
+          <label
+            className="form-label"
+            style={{ fontSize: "1rem", color: "var(--color-text-main)" }}
+          >
+            使用者名稱：
+          </label>
           <input
             className="form-control"
             type="text"
@@ -42,7 +57,12 @@ export default function LoginPage({ setToken }) {
           />
         </div>
         <div className="mb-3">
-          <label className="form-label">密碼：</label>
+          <label
+            className="form-label"
+            style={{ fontSize: "1rem", color: "var(--color-text-main)" }}
+          >
+            密碼：
+          </label>
           <input
             className="form-control"
             type="password"
@@ -54,7 +74,10 @@ export default function LoginPage({ setToken }) {
         <button type="submit" className="btn btn-primary w-100">
           登入
         </button>
-        <p className="mt-3 text-center">
+        <p
+          className="mt-3 text-center"
+          style={{ color: "var(--color-text-secondary)" }}
+        >
           還沒帳號？<Link to="/register"> 立即註冊</Link>
         </p>
       </form>

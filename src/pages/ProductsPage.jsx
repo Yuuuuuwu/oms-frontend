@@ -1,8 +1,5 @@
-/*
-  src/pages/ProductsPage.jsx
-  ----
-  顯示商品列表，包含編輯與刪除功能
-*/
+// src/pages/ProductsPage.jsx
+
 import { useEffect, useState } from "react";
 import api from "../api";
 import { Link } from "react-router-dom";
@@ -16,41 +13,47 @@ export default function ProductsPage() {
       setProducts(res.data);
     } catch (err) {
       console.error("抓產品列表失敗：", err);
+      setProducts([]);
     }
   };
 
   useEffect(() => {
-    api
-      .get("/products")
-      .then((res) => {
-        setProducts(res.data);
-      })
-      .catch((err) => {
-        console.error("載入商品失敗，顯示空列表", err);
-        // 500 時先給空陣列，讓畫面顯示「暫無商品」
-        setProducts([]);
-      });
+    fetchProducts();
   }, []);
 
   const handleDelete = async (id) => {
     if (window.confirm("確定要刪除？")) {
-      await api.delete(`/products/${id}`);
-      fetchProducts();
+      try {
+        await api.delete(`/products/${id}`);
+        fetchProducts();
+      } catch (err) {
+        console.error("刪除失敗：", err);
+        alert("刪除失敗");
+      }
     }
   };
 
   return (
-    <div className="container-fluid">
+    <div style={{ maxWidth: "1000px", margin: "0 auto", padding: "24px 16px" }}>
       {/* 1. Page Heading */}
-      <div className="d-sm-flex align-items-center justify-content-between mb-4">
-        <h1 className="h3 mb-0 text-gray-800">商品列表</h1>
+      <div
+        style={{
+          display: "flex",
+          alignItems: "center",
+          justifyContent: "space-between",
+          marginBottom: "24px",
+        }}
+      >
+        <h2 style={{ fontSize: "1.5rem", color: "var(--color-text-main)" }}>
+          商品列表
+        </h2>
         <Link to="/products/new" className="btn btn-primary">
           新增商品
         </Link>
       </div>
 
       {/* 2. 商品表格 Card */}
-      <div className="card shadow mb-4">
+      <div className="card" style={{ boxShadow: "0 2px 6px rgba(0,0,0,0.05)" }}>
         <div className="card-body p-0">
           <div className="table-responsive">
             <table className="table table-hover align-middle mb-0">
@@ -63,13 +66,20 @@ export default function ProductsPage() {
                 </tr>
               </thead>
               <tbody>
+                {products.length === 0 && (
+                  <tr>
+                    <td colSpan="4" className="text-center py-3">
+                      暫無商品
+                    </td>
+                  </tr>
+                )}
                 {products.map((p) => (
                   <tr key={p.id}>
                     <td>{p.id}</td>
                     <td>{p.name}</td>
                     <td>${p.price}</td>
                     <td>
-                      <div className="d-flex gap-2">
+                      <div style={{ display: "flex", gap: "8px" }}>
                         <Link
                           to={`/products/${p.id}/edit`}
                           className="btn btn-sm btn-outline-secondary"
@@ -86,13 +96,6 @@ export default function ProductsPage() {
                     </td>
                   </tr>
                 ))}
-                {products.length === 0 && (
-                  <tr>
-                    <td colSpan="4" className="text-center py-3">
-                      暫無商品
-                    </td>
-                  </tr>
-                )}
               </tbody>
             </table>
           </div>
